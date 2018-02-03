@@ -8,17 +8,17 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>node中的精髓Stream(流) | lihuanji</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="在前端工程化中产生了很多工具，例如grunt,gulp,webpack,babel…等等，这些工具都是通过node中的stream实现。在node中stream也是非常非常非常重要的模块，比如我们常用的console就是基于stream的实例，还有net,http等核心模块都是基于stream来实现的，可见stream是多么的重要。 1.什么是stream?是一种数据传输手段，从一个地方传输到另一">
+  <meta name="description" content="在前端工程化中产生了很多工具，例如grunt,gulp,webpack,babel…等等，这些工具都是通过node中的stream实现。在node中stream也是非常非常非常重要的模块，比如我们常用的console就是基于stream的实例，还有net,http等核心模块都是基于stream来实现的，可见stream是多么的重要。">
 <meta name="keywords" content="node">
 <meta property="og:type" content="article">
 <meta property="og:title" content="node中的精髓Stream(流)">
 <meta property="og:url" content="http://yoursite.com/2018/02/03/stream/index.html">
 <meta property="og:site_name" content="lihuanji">
-<meta property="og:description" content="在前端工程化中产生了很多工具，例如grunt,gulp,webpack,babel…等等，这些工具都是通过node中的stream实现。在node中stream也是非常非常非常重要的模块，比如我们常用的console就是基于stream的实例，还有net,http等核心模块都是基于stream来实现的，可见stream是多么的重要。 1.什么是stream?是一种数据传输手段，从一个地方传输到另一">
-<meta property="og:updated_time" content="2018-02-03T08:25:36.000Z">
+<meta property="og:description" content="在前端工程化中产生了很多工具，例如grunt,gulp,webpack,babel…等等，这些工具都是通过node中的stream实现。在node中stream也是非常非常非常重要的模块，比如我们常用的console就是基于stream的实例，还有net,http等核心模块都是基于stream来实现的，可见stream是多么的重要。">
+<meta property="og:updated_time" content="2018-02-03T09:17:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="node中的精髓Stream(流)">
-<meta name="twitter:description" content="在前端工程化中产生了很多工具，例如grunt,gulp,webpack,babel…等等，这些工具都是通过node中的stream实现。在node中stream也是非常非常非常重要的模块，比如我们常用的console就是基于stream的实例，还有net,http等核心模块都是基于stream来实现的，可见stream是多么的重要。 1.什么是stream?是一种数据传输手段，从一个地方传输到另一">
+<meta name="twitter:description" content="在前端工程化中产生了很多工具，例如grunt,gulp,webpack,babel…等等，这些工具都是通过node中的stream实现。在node中stream也是非常非常非常重要的模块，比如我们常用的console就是基于stream的实例，还有net,http等核心模块都是基于stream来实现的，可见stream是多么的重要。">
   
     <link rel="alternative" href="/atom.xml" title="lihuanji" type="application/atom+xml">
   
@@ -169,6 +169,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>在前端工程化中产生了很多工具，例如grunt,gulp,webpack,babel…等等，这些工具都是通过node中的stream实现。<br>在node中stream也是非常非常非常重要的模块，比如我们常用的console就是基于stream的实例，还有net,http等核心模块都是基于stream来实现的，可见stream是多么的重要。</p>
+<a id="more"></a>
 <h2 id="1-什么是stream"><a href="#1-什么是stream" class="headerlink" title="1.什么是stream?"></a>1.什么是stream?</h2><p>是一种数据传输手段，从一个地方传输到另一个地方。<br><br>在写node的时候会存在读取文件，比如现在我们有一个非常大的文件，50G吧</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="comment">// test文件50个G</span></span><br><span class="line">fs.readFileSync(<span class="string">'./test.text'</span>);</span><br></pre></td></tr></table></figure>
 <p>这个时候需要消耗大量的时候去读取这个文件，然而我们可能关心的并不是文件所有内容，还会存在直接读取失败。stream就是为了解决这些问题而产生，我们读一些数据处理一些数据，当读到所关心数据的时候，则可以不再继续读取。</p>
