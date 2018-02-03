@@ -6,14 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: node | lihuanji</title>
+  <title>node中的精髓Stream(流) | lihuanji</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="lihuanji">
-<meta property="og:url" content="http://yoursite.com/tags/node/index.html">
+  <meta name="description" content="在前端工程化中产生了很多工具，例如grunt,gulp,webpack,babel…等等，这些工具都是通过node中的stream实现。在node中stream也是非常非常非常重要的模块，比如我们常用的console就是基于stream的实例，还有net,http等核心模块都是基于stream来实现的，可见stream是多么的重要。 1.什么是stream?是一种数据传输手段，从一个地方传输到另一">
+<meta name="keywords" content="node">
+<meta property="og:type" content="article">
+<meta property="og:title" content="node中的精髓Stream(流)">
+<meta property="og:url" content="http://yoursite.com/2018/02/03/stream/index.html">
 <meta property="og:site_name" content="lihuanji">
+<meta property="og:description" content="在前端工程化中产生了很多工具，例如grunt,gulp,webpack,babel…等等，这些工具都是通过node中的stream实现。在node中stream也是非常非常非常重要的模块，比如我们常用的console就是基于stream的实例，还有net,http等核心模块都是基于stream来实现的，可见stream是多么的重要。 1.什么是stream?是一种数据传输手段，从一个地方传输到另一">
+<meta property="og:updated_time" content="2018-02-03T08:25:36.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="lihuanji">
+<meta name="twitter:title" content="node中的精髓Stream(流)">
+<meta name="twitter:description" content="在前端工程化中产生了很多工具，例如grunt,gulp,webpack,babel…等等，这些工具都是通过node中的stream实现。在node中stream也是非常非常非常重要的模块，比如我们常用的console就是基于stream的实例，还有net,http等核心模块都是基于stream来实现的，可见stream是多么的重要。 1.什么是stream?是一种数据传输手段，从一个地方传输到另一">
   
     <link rel="alternative" href="/atom.xml" title="lihuanji" type="application/atom+xml">
   
@@ -143,36 +148,135 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-stream" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/03/stream/" class="archive-article-date">
-  	<time datetime="2018-02-03T08:20:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-03</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/03/stream/">node中的精髓Stream(流)</a>
+    <h1 class="article-title" itemprop="name">
+      node中的精髓Stream(流)
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2018/02/03/stream/" class="archive-article-date">
+  	<time datetime="2018-02-03T08:20:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在前端工程化中产生了很多工具，例如grunt,gulp,webpack,babel…等等，这些工具都是通过node中的stream实现。<br>在node中stream也是非常非常非常重要的模块，比如我们常用的console就是基于stream的实例，还有net,http等核心模块都是基于stream来实现的，可见stream是多么的重要。</p>
+<h2 id="1-什么是stream"><a href="#1-什么是stream" class="headerlink" title="1.什么是stream?"></a>1.什么是stream?</h2><p>是一种数据传输手段，从一个地方传输到另一个地方。<br><br>在写node的时候会存在读取文件，比如现在我们有一个非常大的文件，50G吧</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="comment">// test文件50个G</span></span><br><span class="line">fs.readFileSync(<span class="string">'./test.text'</span>);</span><br></pre></td></tr></table></figure>
+<p>这个时候需要消耗大量的时候去读取这个文件，然而我们可能关心的并不是文件所有内容，还会存在直接读取失败。stream就是为了解决这些问题而产生，我们读一些数据处理一些数据，当读到所关心数据的时候，则可以不再继续读取。</p>
+<p>stream翻译成中文‘流’，就像水一样，从水龙头流向水杯。</p>
+<h2 id="2-Stream模块"><a href="#2-Stream模块" class="headerlink" title="2. Stream模块"></a>2. Stream模块</h2><p>stream继承于EventEmitter，拥有事件触发和事件监听功能。主要分为4种基本流类型:<br></p>
+<ol>
+<li>Readable (可读流) <br></li>
+<li>Writable (可写流) <br></li>
+<li>Duplex (读写流) <br></li>
+<li>Transform (转换流) <br><br>在流中默认可操作的类型string和Buffer,如果需要处理其他类型的js值需要传入参数objectMode: true(默认为false)</li>
+</ol>
+<p>在流中存在一个重要的概念，<strong>缓存区</strong>，就像拿水杯去接水，水杯就是缓存区，当水杯满，则会关闭水龙头，等把水杯里面的水消耗完毕，再打开水龙头去接水。<br><br>stream默认缓存区大小为16384(16kb),可以通过highWaterMark参数设置缓存区大小，但设置encoding后，以设置的字符编码为单位衡量。</p>
+<h2 id="3-Readable"><a href="#3-Readable" class="headerlink" title="3. Readable"></a>3. Readable</h2><p>首先创建一个可读流,可接收5个参数:</p>
+<ul>
+<li>highWaterMark 缓存区字节大小，默认16384</li>
+<li>encoding   字符编码,默认为null,就是buffer</li>
+<li>objectMode  是否操作js其他类型 默认false</li>
+<li>read       对内部的_read()方式实现 子类实现，父类调用</li>
+<li>destroy    对内部的_ destroy()方法实现 子类实现，父类调用</li>
+</ul>
+<p>可读流中分为2种模式<strong>流动模式</strong>和<strong>暂停模式</strong>。<br><br>监听data事件，触发流动模式，会源源不断生产数据触发data事件:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; Readable &#125; = <span class="built_in">require</span>(<span class="string">'stream'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> i = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line"><span class="keyword">const</span> rs = Readable(&#123;</span><br><span class="line">    encoding: <span class="string">'utf8'</span>,</span><br><span class="line">    <span class="comment">// 这里传入的read方法，会被写入_read()</span></span><br><span class="line">    read: <span class="function">(<span class="params">size</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// size 为highWaterMark大小</span></span><br><span class="line">        <span class="comment">// 在这个方法里面实现获取数据，读取到数据调用rs.push([data])，如果没有数据了，push(null)结束流</span></span><br><span class="line">        <span class="keyword">if</span> (i &lt; <span class="number">10</span>) &#123;</span><br><span class="line">            rs.push(<span class="string">`当前读取数据: <span class="subst">$&#123;i++&#125;</span>`</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            rs.push(<span class="literal">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 源代码，可覆盖</span></span><br><span class="line">    destroy(err, cb) &#123;</span><br><span class="line">    	rs.push(<span class="literal">null</span>);</span><br><span class="line">    	cb(err);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">	</span><br><span class="line">rs.on(<span class="string">'data'</span>, (data) =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">    <span class="comment">// 每次push数据则触发data事件</span></span><br><span class="line">    <span class="comment">// 当前读取数据: 0</span></span><br><span class="line">    <span class="comment">// 当前读取数据: 1</span></span><br><span class="line">    <span class="comment">// 当前读取数据: 2</span></span><br><span class="line">    <span class="comment">// 当前读取数据: 3</span></span><br><span class="line">    <span class="comment">// 当前读取数据: 4</span></span><br><span class="line">    <span class="comment">// 当前读取数据: 5</span></span><br><span class="line">    <span class="comment">// 当前读取数据: 6</span></span><br><span class="line">    <span class="comment">// 当前读取数据: 7</span></span><br><span class="line">    <span class="comment">// 当前读取数据: 8</span></span><br><span class="line">    <span class="comment">// 当前读取数据: 9</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>监听readable事件，触发暂停模式，当流有了新数据或到了流结束之前触发readable事件，需要显示调用read([size])读取数据:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; Readable &#125; = <span class="built_in">require</span>(<span class="string">'stream'</span>);</span><br><span class="line">	</span><br><span class="line"><span class="keyword">let</span> i = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line"><span class="keyword">const</span> rs = Readable(&#123;</span><br><span class="line">    encoding: <span class="string">'utf8'</span>,</span><br><span class="line">    highWaterMark: <span class="number">9</span>,</span><br><span class="line">    <span class="comment">// 这里传入的read方法，会被写入_read()</span></span><br><span class="line">    read: <span class="function">(<span class="params">size</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// size 为highWaterMark大小</span></span><br><span class="line">        <span class="comment">// 在这个方法里面实现获取数据，读取到数据调用rs.push([data])，如果没有数据了，push(null)结束流</span></span><br><span class="line">        <span class="keyword">if</span> (i &lt; <span class="number">10</span>) &#123;</span><br><span class="line">          <span class="comment">// push其实是把数据放入缓存区</span></span><br><span class="line">          rs.push(<span class="string">`当前读取数据: <span class="subst">$&#123;i++&#125;</span>`</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            rs.push(<span class="literal">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">rs.on(<span class="string">'readable'</span>, () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> data = rs.read(<span class="number">9</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">    <span class="comment">// </span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>read([size]) size参数:</p>
+<ul>
+<li>不传代表读取缓存区所有数据。</li>
+<li>传入0 填充缓存区, 但返回null</li>
+<li>size &lt; 当前缓存区数据  返回所需数据</li>
+<li>size &gt; 当前缓存区数据  返回null 并改变highWaterMark值</li>
+</ul>
+<p>这里的缓存区数据不是指highWaterMark，获取缓存区数据大小rs._readableState.length。</p>
+<p>流的模式可以自由切换: 通过rs._readableState.flowing的值获取当前状态</p>
+<ul>
+<li>null 初始状态</li>
+<li>false 暂停模式</li>
+<li>true 流动模式</li>
+</ul>
+<p>rs.pause()切换到暂停模式 rs.resume()切换到流动模式</p>
+<p>在可读流里面还可以监听其他事件:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">rs.on(<span class="string">'close'</span>, () =&gt; &#123;</span><br><span class="line">	<span class="comment">// 流关闭时或文件关闭时触发</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">rs.on(<span class="string">'end'</span>, () =&gt; &#123;</span><br><span class="line">	<span class="comment">// 在流中没有数据可供消费时触发</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">rs.on(<span class="string">'error'</span>, (err) =&gt; &#123;</span><br><span class="line">	<span class="comment">// 发生错误时候</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="4-Writable"><a href="#4-Writable" class="headerlink" title="4. Writable"></a>4. Writable</h2><p>可写流可接受参数: </p>
+<ul>
+<li>highWaterMark  缓存区字节大小，默认16384</li>
+<li>decodeStrings  是否将字符编码传入缓冲区</li>
+<li>objectMode 是否操作js其他类型 默认false</li>
+<li>write 子类实现，供父类调用 实现写入底层数据</li>
+<li>writev 子类实现，供父类调用 一次处理多个chunk写入底层数据</li>
+<li>destroy 可以覆盖父类方法，不能直接调用，销毁流时，父类调用</li>
+<li>final 完成写入所有数据时父类触发</li>
+</ul>
+<p>在实现流除了用上面直接传入参数的方式，还可以用继承类</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WS</span> <span class="keyword">extends</span> <span class="title">stream</span>.<span class="title">Writable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>() &#123;</span><br><span class="line">        <span class="keyword">super</span>(&#123;</span><br><span class="line">            highWaterMark: <span class="number">1</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _write(chunk, encoding, cb) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>._writableState.length);</span><br><span class="line">        <span class="comment">// chunk 为需要写入的数据</span></span><br><span class="line">        <span class="comment">// encoding 字符编码</span></span><br><span class="line">        <span class="comment">// cb 回调函数, 如果写入成功需要调用cb去执行下一次写入，如果发生错误，可以cb(new Error([错误信息]))</span></span><br><span class="line">        <span class="keyword">if</span> (chunk.length &lt; <span class="number">4</span>) &#123;</span><br><span class="line">            fs.writeFileSync(<span class="string">'./2.text'</span>, chunk, &#123;</span><br><span class="line">                flag: <span class="string">'a'</span></span><br><span class="line">            &#125;);</span><br><span class="line">            cb();</span><br><span class="line">        &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">            cb(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'超出4个字节'</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> ws = <span class="keyword">new</span> WS();</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> i = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> flag = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// write() 会返回boolean false -&gt; 缓存区没满 true —&gt; 已满，需要暂停写入数据</span></span><br><span class="line">    <span class="keyword">while</span>(i &lt; <span class="number">10</span> &amp;&amp; flag) &#123;</span><br><span class="line">        flag = ws.write(<span class="string">`<span class="subst">$&#123;i++&#125;</span>`</span>);</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'flag'</span>, flag);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">next();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当所有缓存区数据已经成功写入底层数据,缓存区没有数据了,触发drain事件</span></span><br><span class="line">ws.on(<span class="string">'drain'</span>, () =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'drain'</span>);</span><br><span class="line">    <span class="comment">// 继续写入缓存区数据</span></span><br><span class="line">    next();</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>可写流的end事件，一旦触发end事件，后续不能再写入数据.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ws.write(<span class="string">'start'</span>);</span><br><span class="line">ws.end(<span class="string">'end'</span>);</span><br><span class="line">ws.wrtie(<span class="string">'test'</span>); <span class="comment">// 报错 write after end</span></span><br></pre></td></tr></table></figure>
+<p>finish事件:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ws.write(<span class="string">'start'</span>);</span><br><span class="line">ws.end(<span class="string">'end'</span>);</span><br><span class="line">ws.on(<span class="string">'finish'</span>, () =&gt; &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'调用end方法后,并且所有数据已经写入底层'</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>cork()与uncork()，强制所有数据先写入缓存区，直到调用uncork()或end()，这时一并写入底层:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> ws = stream.Writable(&#123;</span><br><span class="line">	writev(chunks, encoding, cb) &#123;</span><br><span class="line">	    <span class="comment">// 这时chunks为一个数组，包含所有的chunk</span></span><br><span class="line">	</span><br><span class="line">	    <span class="comment">// 现在length为10</span></span><br><span class="line">	    <span class="built_in">console</span>.log(chunk.length);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写入数据之前，强制写入数据放入缓存区</span></span><br><span class="line">ws.cork();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写入数据</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">    ws.write(i.toString());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写入完毕，可以触发写入底层</span></span><br><span class="line">ws.uncork();</span><br></pre></td></tr></table></figure>
+<h2 id="5-Duplex"><a href="#5-Duplex" class="headerlink" title="5. Duplex"></a>5. Duplex</h2><p>读写流，该方法继承了可写流和可读流，但相互之间没有关系，各自独立缓存区，拥有Writable和Readable所有方法和事件，同时实现_read()和_write()方法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">const</span> stream = <span class="built_in">require</span>(<span class="string">'stream'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> duplex = stream.Duplex(&#123;</span><br><span class="line">    write(chunk, encoding, cb) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(chunk.toString(<span class="string">'utf8'</span>)); <span class="comment">// 写入</span></span><br><span class="line">    &#125;,</span><br><span class="line">    read() &#123;</span><br><span class="line">        <span class="keyword">this</span>.push(<span class="string">'读取'</span>);</span><br><span class="line">        <span class="keyword">this</span>.push(<span class="literal">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(duplex.read(<span class="number">6</span>).toString(<span class="string">'utf8'</span>)); <span class="comment">// 读取</span></span><br><span class="line"></span><br><span class="line">duplex.write(<span class="string">'写入'</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="6-Transform"><a href="#6-Transform" class="headerlink" title="6. Transform"></a>6. Transform</h2><p>转换流，这个流在前端工程化中用到最多，从一个地方读取数据，转换数据后输出到一个地方，该流继承于Duplex。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">const</span> stream = <span class="built_in">require</span>(<span class="string">'stream'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> transform = stream.Transform(&#123;</span><br><span class="line">    transform(chunk, encoding, cb)&#123;</span><br><span class="line">        <span class="comment">// 把数据转换成大写字母，然后push到缓存区</span></span><br><span class="line">        <span class="keyword">this</span>.push(chunk.toString().toUpperCase());</span><br><span class="line">        cb();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">transform.write(<span class="string">'a'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(transform.read(<span class="number">1</span>).toString()); <span class="comment">// A</span></span><br></pre></td></tr></table></figure>
+<h2 id="7-fs快速创建可读-可写流"><a href="#7-fs快速创建可读-可写流" class="headerlink" title="7. fs快速创建可读/可写流"></a>7. fs快速创建可读/可写流</h2><p>可读流和可写流都需要我们去实现父类的方法，那么fs这个模块帮我们做了这件事情，fs里面实现了高效并且可靠的可读/可写流，提供快速创建流，不再去实现父类_write()或_read()。下面我们来看看如何使用: </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 创建可读流</span></span><br><span class="line"><span class="comment"> *  </span></span><br><span class="line"><span class="comment"> *  第一个参数文件路径</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> *  第二个参数为options</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment">    flags?: string;      </span></span><br><span class="line"><span class="comment">    encoding?: string;   字符编码</span></span><br><span class="line"><span class="comment">    fd?: number;     文件打开后的标识符</span></span><br><span class="line"><span class="comment">    mode?: number;    文件的权限</span></span><br><span class="line"><span class="comment">    autoClose?: boolean;   读取完毕后，是否自动关闭文件</span></span><br><span class="line"><span class="comment">    start?: number;  从哪个位置开始读取</span></span><br><span class="line"><span class="comment">    end?: number;    读到什么时候结束</span></span><br><span class="line"><span class="comment">    highWaterMark?: number;   最高水位线</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> rs = fs.createReadStream(<span class="string">'1.text'</span>);</span><br><span class="line"></span><br><span class="line">rs.on(<span class="string">'data'</span>, data =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 创建可写流</span></span><br><span class="line"><span class="comment"> *  </span></span><br><span class="line"><span class="comment"> *  第一个参数文件路径</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> *  第二个参数为options</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment">    flags?: string;  </span></span><br><span class="line"><span class="comment">    encoding?: string; 字符编码</span></span><br><span class="line"><span class="comment">    fd?: number;    文件打开后的标识符</span></span><br><span class="line"><span class="comment">    mode?: number;   文件的权限</span></span><br><span class="line"><span class="comment">    autoClose?: boolean;  写入完毕后，是否自动关闭文件</span></span><br><span class="line"><span class="comment">    start?: number;  从什么位置开始写入</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> ws = fs.createWriteStream(<span class="string">'2.text'</span>);</span><br><span class="line"></span><br><span class="line">ws.write(<span class="string">'123'</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="8-pipe"><a href="#8-pipe" class="headerlink" title="8. pipe"></a>8. pipe</h2><p>在流中搭建一条管道，从可读流中到可写流。</p>
+<p>可读流中有pipe()方法,在可写流中可以监听pipe事件，下面实现了从可读流中通过管道到可写流: </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">const</span> stream = <span class="built_in">require</span>(<span class="string">'stream'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> rs = stream.Readable(&#123;</span><br><span class="line">    read() &#123;</span><br><span class="line">        <span class="keyword">this</span>.push(fs.readFileSync(<span class="string">'./1.text'</span>)); <span class="comment">// 文件内容 test</span></span><br><span class="line">        <span class="keyword">this</span>.push(<span class="literal">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> ws = stream.Writable(&#123;</span><br><span class="line">    write(chunk, encoding, cb) &#123;</span><br><span class="line">        <span class="comment">// chunk为test buffer</span></span><br><span class="line">        fs.writeFileSync(<span class="string">'./2.text'</span>, chunk.toString());</span><br><span class="line">        cb();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">ws.on(<span class="string">'pipe'</span>, data =&gt; &#123;</span><br><span class="line">    <span class="comment">// 触发pipe事件</span></span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">rs.pipe(ws);</span><br></pre></td></tr></table></figure>
+<h2 id="9-总结"><a href="#9-总结" class="headerlink" title="9. 总结"></a>9. 总结</h2><p>流分为四种基本类型，两种模式。流中的数据不是直接写入或读取，有缓存区的概念。</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/img/alipay.JPG">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/img/wechat.JPG">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -184,19 +288,122 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/02/03/stream/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2018/01/31/insertAfter/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">insertAfter实现</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
+  <div id="gitment-ctn"></div> 
+<link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+<script src="//imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  id: "http://yoursite.com/2018/02/03/stream/",
+  owner: 'lihuanji',
+  repo: 'http://lihuanji.github.io',
+  oauth: {
+    client_id: '8f8560bf27d97dbcf161',
+    client_secret: '897ee37dc9b7b609ace05674fe0c1c1cbaf0fa9e',
+  },
+})
+gitment.render('gitment-ctn')
+</script>
+  
 
 
           </div>
@@ -219,9 +426,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
