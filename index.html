@@ -166,29 +166,9 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>express提供丰富的http工具，快速处理请求，响应。核心功能中间件，路由，基于三个类来实现，Router,Layer,Route。</p>
-<h2 id="1-Router"><a href="#1-Router" class="headerlink" title="1.Router"></a>1.Router</h2><p>主要核心内容: </p>
-<ul>
-<li>stack数组存放子路由,中间件。</li>
-<li>handle方法，循环stack数组，根据规则执行响应回调函数。</li>
-</ul>
-<p><img src="http://upload.ouliu.net/i/20180317170314tw13r.jpeg" alt=""></p>
-<p>一般添加一个路由会这样写代码:</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">app.get(<span class="string">'/list'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">	res.end(<span class="string">'hello express'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>在Router里面做了一件事来支持这样的写法: </p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> methods = <span class="built_in">require</span>(<span class="string">'methods'</span>);  <span class="comment">//包含http的方法名</span></span><br><span class="line"></span><br><span class="line">methods.forEach(<span class="function">(<span class="params">methods</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="comment">//拿到具体一个方法名 methods</span></span><br><span class="line">	Router.prototype[methods] = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="comment">// 调用route方法往stack里面push一个路由</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>express中路由和中间件都是放在了stack数组里面，那么就有顺序问题，如果use一个中间件那么需要放在路由前面。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>);</span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> express();</span><br><span class="line"></span><br><span class="line">app.use(<span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'111'</span>);</span><br><span class="line">    next();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.get(<span class="string">'/list'</span>,(req, res) =&gt; &#123;</span><br><span class="line">    res.end(<span class="string">'hello express'</span>);  </span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.listen(<span class="string">'8000'</span>);</span><br></pre></td></tr></table></figure>
-<p>next表示通过，可以执行下个中间件或路由，如果发生错误，则可以抛出错误，交给错误中间件处理，错误中间件接受4个参数，4个参数的use就代表了错误中间件.第一个参数为错误信息</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">app.use(<span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'111'</span>);</span><br><span class="line">    next(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'error'</span>));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.use(<span class="function">(<span class="params">error, req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(error);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>当请求来时，会执行handle，循环stack，发现path相同，method相同，那么调用对应callback。这样处理，带来了一个问题，如果路由不断增多，stack数组会不断增大，匹配效率下降，为了提高效率，express引入了route,layer.</p>
-<h2 id="2-Layer"><a href="#2-Layer" class="headerlink" title="2.Layer"></a>2.Layer</h2><p>把同一个path形成一层,并提供match方法进行匹配判断，handle方法来执行当前层的深入匹配methods。</p>
-<p>简单理解就是匹配一个路径，然后执行回调方法。</p>
-<p>那么当一个路由注册的时候，则新生成一个Layer实例，如果剩下还有路由路径相同，则放在该层。怎么去放入这层的，在Route做。</p>
-<h2 id="3-Route"><a href="#3-Route" class="headerlink" title="3.Route"></a>3.Route</h2><p><img src="http://upload.ouliu.net/i/201803172316064br2m.jpeg" alt=""><br>Layer形成了层，但没有做匹配methods的事情，那么这个事情由Route来做。在Layer里面会传入一个handle方法，那么这个handle方式就是Route里面的dipatch方法，当Layer的路径已经匹配成功，就会交给Route来匹配method，Route的对象存放所有注册的方法名，用于快速匹配是否有注册该方法，在Route里面又复用了Layer，去执行真正回调处理函数。</p>
-<h2 id="4-实现高效率匹配"><a href="#4-实现高效率匹配" class="headerlink" title="4.实现高效率匹配"></a>4.实现高效率匹配</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">app.route(<span class="string">'/list'</span>).get(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.end(<span class="string">'hello get'</span>);  </span><br><span class="line">&#125;).post(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.end(<span class="string">'hello post'</span>);  </span><br><span class="line">&#125;).put(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.end(<span class="string">'hello put'</span>);</span><br><span class="line">&#125;).delete(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.end(<span class="string">'hello delete'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>下面看一个伪代码，看如何去实现的app.route方法: </p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">app.route = <span class="function"><span class="keyword">function</span>(<span class="params">path</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> route = <span class="keyword">new</span> Route(path); <span class="comment">// 生成一个route实例</span></span><br><span class="line">	<span class="keyword">const</span> Layer = <span class="keyword">new</span> Layer(path, route.dispatch.bind(route)); <span class="comment">// 把route里面的dispatch方法作为Layer的处理函数</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">this</span>.stack.push(layer); <span class="comment">// 放入数组中</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> route; <span class="comment">// 返回route实例，用于链式调用，去注册method方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+        
+          <a class="article-more-a" href="/2018/03/17/express/#more">more >></a>
+        
       
 
       
@@ -802,11 +782,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
+                <a href="javascript:void(0)" class="js-tag color3">js</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">js</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
