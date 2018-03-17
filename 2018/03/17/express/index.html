@@ -6,14 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2018 | lihuanji</title>
+  <title>express初识源码-Router,Layer,Route | lihuanji</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="lihuanji">
-<meta property="og:url" content="http://yoursite.com/archives/2018/index.html">
+  <meta name="description" content="express提供丰富的http工具，快速处理请求，响应。核心功能中间件，路由，基于三个类来实现，Router,Layer,Route。 1.Router主要核心内容:   stack数组存放子路由,中间件。 handle方法，循环stack数组，根据规则执行响应回调函数。   一般添加一个路由会这样写代码: 123app.get(&apos;/list&apos;, function (req, res) &amp;#12">
+<meta name="keywords" content="node">
+<meta property="og:type" content="article">
+<meta property="og:title" content="express初识源码-Router,Layer,Route">
+<meta property="og:url" content="http://yoursite.com/2018/03/17/express/index.html">
 <meta property="og:site_name" content="lihuanji">
+<meta property="og:description" content="express提供丰富的http工具，快速处理请求，响应。核心功能中间件，路由，基于三个类来实现，Router,Layer,Route。 1.Router主要核心内容:   stack数组存放子路由,中间件。 handle方法，循环stack数组，根据规则执行响应回调函数。   一般添加一个路由会这样写代码: 123app.get(&apos;/list&apos;, function (req, res) &amp;#12">
+<meta property="og:image" content="http://upload.ouliu.net/i/20180317170314tw13r.jpeg">
+<meta property="og:image" content="http://upload.ouliu.net/i/201803172316064br2m.jpeg">
+<meta property="og:updated_time" content="2018-03-17T15:26:22.970Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="lihuanji">
+<meta name="twitter:title" content="express初识源码-Router,Layer,Route">
+<meta name="twitter:description" content="express提供丰富的http工具，快速处理请求，响应。核心功能中间件，路由，基于三个类来实现，Router,Layer,Route。 1.Router主要核心内容:   stack数组存放子路由,中间件。 handle方法，循环stack数组，根据规则执行响应回调函数。   一般添加一个路由会这样写代码: 123app.get(&apos;/list&apos;, function (req, res) &amp;#12">
+<meta name="twitter:image" content="http://upload.ouliu.net/i/20180317170314tw13r.jpeg">
   
     <link rel="alternative" href="/atom.xml" title="lihuanji" type="application/atom+xml">
   
@@ -143,36 +151,88 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-express" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      express初识源码-Router,Layer,Route
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/17/express/" class="archive-article-date">
+
+        
+        <a href="/2018/03/17/express/" class="archive-article-date">
   	<time datetime="2018-03-17T06:50:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-17</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/17/express/">express初识源码-Router,Layer,Route</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>express提供丰富的http工具，快速处理请求，响应。核心功能中间件，路由，基于三个类来实现，Router,Layer,Route。</p>
+<h2 id="1-Router"><a href="#1-Router" class="headerlink" title="1.Router"></a>1.Router</h2><p>主要核心内容: </p>
+<ul>
+<li>stack数组存放子路由,中间件。</li>
+<li>handle方法，循环stack数组，根据规则执行响应回调函数。</li>
+</ul>
+<p><img src="http://upload.ouliu.net/i/20180317170314tw13r.jpeg" alt=""></p>
+<p>一般添加一个路由会这样写代码:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">app.get(<span class="string">'/list'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">	res.end(<span class="string">'hello express'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>在Router里面做了一件事来支持这样的写法: </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> methods = <span class="built_in">require</span>(<span class="string">'methods'</span>);  <span class="comment">//包含http的方法名</span></span><br><span class="line"></span><br><span class="line">methods.forEach(<span class="function">(<span class="params">methods</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="comment">//拿到具体一个方法名 methods</span></span><br><span class="line">	Router.prototype[methods] = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="comment">// 调用route方法往stack里面push一个路由</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>express中路由和中间件都是放在了stack数组里面，那么就有顺序问题，如果use一个中间件那么需要放在路由前面。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>);</span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> express();</span><br><span class="line"></span><br><span class="line">app.use(<span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'111'</span>);</span><br><span class="line">    next();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.get(<span class="string">'/list'</span>,(req, res) =&gt; &#123;</span><br><span class="line">    res.end(<span class="string">'hello express'</span>);  </span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.listen(<span class="string">'8000'</span>);</span><br></pre></td></tr></table></figure>
+<p>next表示通过，可以执行下个中间件或路由，如果发生错误，则可以抛出错误，交给错误中间件处理，错误中间件接受4个参数，4个参数的use就代表了错误中间件.第一个参数为错误信息</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">app.use(<span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'111'</span>);</span><br><span class="line">    next(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'error'</span>));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.use(<span class="function">(<span class="params">error, req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(error);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>当请求来时，会执行handle，循环stack，发现path相同，method相同，那么调用对应callback。这样处理，带来了一个问题，如果路由不断增多，stack数组会不断增大，匹配效率下降，为了提高效率，express引入了route,layer.</p>
+<h2 id="2-Layer"><a href="#2-Layer" class="headerlink" title="2.Layer"></a>2.Layer</h2><p>把同一个path形成一层,并提供match方法进行匹配判断，handle方法来执行当前层的深入匹配methods。</p>
+<p>简单理解就是匹配一个路径，然后执行回调方法。</p>
+<p>那么当一个路由注册的时候，则新生成一个Layer实例，如果剩下还有路由路径相同，则放在该层。怎么去放入这层的，在Route做。</p>
+<h2 id="3-Route"><a href="#3-Route" class="headerlink" title="3.Route"></a>3.Route</h2><p><img src="http://upload.ouliu.net/i/201803172316064br2m.jpeg" alt=""><br>Layer形成了层，但没有做匹配methods的事情，那么这个事情由Route来做。在Layer里面会传入一个handle方法，那么这个handle方式就是Route里面的dipatch方法，当Layer的路径已经匹配成功，就会交给Route来匹配method，Route的对象存放所有注册的方法名，用于快速匹配是否有注册该方法，在Route里面又复用了Layer，去执行真正回调处理函数。</p>
+<h2 id="4-实现高效率匹配"><a href="#4-实现高效率匹配" class="headerlink" title="4.实现高效率匹配"></a>4.实现高效率匹配</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">app.route(<span class="string">'/list'</span>).get(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.end(<span class="string">'hello get'</span>);  </span><br><span class="line">&#125;).post(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.end(<span class="string">'hello post'</span>);  </span><br><span class="line">&#125;).put(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.end(<span class="string">'hello put'</span>);</span><br><span class="line">&#125;).delete(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.end(<span class="string">'hello delete'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>下面看一个伪代码，看如何去实现的app.route方法: </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">app.route = <span class="function"><span class="keyword">function</span>(<span class="params">path</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> route = <span class="keyword">new</span> Route(path); <span class="comment">// 生成一个route实例</span></span><br><span class="line">	<span class="keyword">const</span> Layer = <span class="keyword">new</span> Layer(path, route.dispatch.bind(route)); <span class="comment">// 把route里面的dispatch方法作为Layer的处理函数</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">this</span>.stack.push(layer); <span class="comment">// 放入数组中</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> route; <span class="comment">// 返回route实例，用于链式调用，去注册method方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-        <div class="article-info info-on-right">
-          
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/img/alipay.JPG">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/img/wechat.JPG">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -184,247 +244,122 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/03/17/express/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/03/hopeServer/" class="archive-article-date">
-  	<time datetime="2018-03-03T07:11:18.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-03</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2018/03/03/hopeServer/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">实战node静态文件服务器</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/03/hopeServer/">实战node静态文件服务器</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/10/tcp/" class="archive-article-date">
-  	<time datetime="2018-02-10T02:22:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-10</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/10/tcp/">TCP/IP网络模型</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">network</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/03/stream/" class="archive-article-date">
-  	<time datetime="2018-02-03T08:20:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/03/stream/">node中的精髓Stream(流)</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/31/insertAfter/" class="archive-article-date">
-  	<time datetime="2018-01-31T06:45:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-31</time>
-</a>
-        </div>
-    	 
+  <div id="gitment-ctn"></div> 
+<link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+<script src="//imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  id: "http://yoursite.com/2018/03/17/express/",
+  owner: 'lihuanji',
+  repo: 'http://lihuanji.github.io',
+  oauth: {
+    client_id: '8f8560bf27d97dbcf161',
+    client_secret: '897ee37dc9b7b609ace05674fe0c1c1cbaf0fa9e',
+  },
+})
+gitment.render('gitment-ctn')
+</script>
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/31/insertAfter/">insertAfter实现</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/20/eventLoop/" class="archive-article-date">
-  	<time datetime="2018-01-20T06:09:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-20</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/20/eventLoop/">javascript中的Event Loop详解</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/12/promise/" class="archive-article-date">
-  	<time datetime="2018-01-12T04:32:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-12</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/12/promise/">Promise是个什么鬼？实现一个Promise.</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -447,8 +382,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
