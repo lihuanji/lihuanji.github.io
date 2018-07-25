@@ -6,14 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2018 | lihuanji</title>
+  <title>跨域最优解 | lihuanji</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="lihuanji">
-<meta property="og:url" content="http://yoursite.com/archives/2018/index.html">
+  <meta name="description" content="项目中和面试经常遇到跨域问题，老生常谈的问题，今天就来讲讲跨域: 浏览器不支持跨域？  用户登录A网站，在cookie里面存入了登录信息，用户再登录B网站，如果没有同源策略，B网站能够轻易拿到用户A网站信息，去伪造用户向A网站发送信息。 DOM元素，iframe嵌入页面，如果没有同源策略，嵌入一个淘宝页面，伪造成淘宝钓鱼网站，用户输入账户密码可以通过dom操作拿到账户信息。 ajax，LocalS">
+<meta name="keywords" content="js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="跨域最优解">
+<meta property="og:url" content="http://yoursite.com/2018/07/25/cross/index.html">
 <meta property="og:site_name" content="lihuanji">
+<meta property="og:description" content="项目中和面试经常遇到跨域问题，老生常谈的问题，今天就来讲讲跨域: 浏览器不支持跨域？  用户登录A网站，在cookie里面存入了登录信息，用户再登录B网站，如果没有同源策略，B网站能够轻易拿到用户A网站信息，去伪造用户向A网站发送信息。 DOM元素，iframe嵌入页面，如果没有同源策略，嵌入一个淘宝页面，伪造成淘宝钓鱼网站，用户输入账户密码可以通过dom操作拿到账户信息。 ajax，LocalS">
+<meta property="og:image" content="https://wx4.sinaimg.cn/mw690/7474ff19gy1ftmcjchhjwj214g0lwjts.jpg">
+<meta property="og:updated_time" content="2018-07-25T11:52:31.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="lihuanji">
+<meta name="twitter:title" content="跨域最优解">
+<meta name="twitter:description" content="项目中和面试经常遇到跨域问题，老生常谈的问题，今天就来讲讲跨域: 浏览器不支持跨域？  用户登录A网站，在cookie里面存入了登录信息，用户再登录B网站，如果没有同源策略，B网站能够轻易拿到用户A网站信息，去伪造用户向A网站发送信息。 DOM元素，iframe嵌入页面，如果没有同源策略，嵌入一个淘宝页面，伪造成淘宝钓鱼网站，用户输入账户密码可以通过dom操作拿到账户信息。 ajax，LocalS">
+<meta name="twitter:image" content="https://wx4.sinaimg.cn/mw690/7474ff19gy1ftmcjchhjwj214g0lwjts.jpg">
   
     <link rel="alternative" href="/atom.xml" title="lihuanji" type="application/atom+xml">
   
@@ -143,36 +150,150 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-cross" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      跨域最优解
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/07/25/cross/" class="archive-article-date">
+
+        
+        <a href="/2018/07/25/cross/" class="archive-article-date">
   	<time datetime="2018-07-25T11:52:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-25</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/07/25/cross/">跨域最优解</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>项目中和面试经常遇到跨域问题，老生常谈的问题，今天就来讲讲跨域:</p>
+<p>浏览器不支持跨域？</p>
+<ol>
+<li>用户登录A网站，在cookie里面存入了登录信息，用户再登录B网站，如果没有同源策略，B网站能够轻易拿到用户A网站信息，去伪造用户向A网站发送信息。</li>
+<li>DOM元素，iframe嵌入页面，如果没有同源策略，嵌入一个淘宝页面，伪造成淘宝钓鱼网站，用户输入账户密码可以通过dom操作拿到账户信息。</li>
+<li>ajax，LocalStorage也不支持跨域，不能随意拿取信息。</li>
+</ol>
+<p>总的来说浏览器不支持跨域是为了安全，但在项目中有些情况下需要去跨域。</p>
+<p>先讲讲什么是同源策略</p>
+<ul>
+<li>协议</li>
+<li>域名</li>
+<li>端口</li>
+</ul>
+<p>3个都一样为同域，其中某一个不一样那么就跨域了。</p>
+<p>列如你的网站域名是<a href="http://www.xxx.com" target="_blank" rel="noopener">http://www.xxx.com</a></p>
+<ul>
+<li><a href="https://www.xxx.com" target="_blank" rel="noopener">https://www.xxx.com</a> （跨域，协议不一致）</li>
+<li><a href="http://aaa.xxx.com（跨域，域名不一致）" target="_blank" rel="noopener">http://aaa.xxx.com（跨域，域名不一致）</a></li>
+<li><a href="http://www.xxx.com:8080" target="_blank" rel="noopener">http://www.xxx.com:8080</a> （跨域，端口不一致）</li>
+<li><a href="http://www.xxx.com/aaa" target="_blank" rel="noopener">http://www.xxx.com/aaa</a> （同域）</li>
+</ul>
+<p>但是在浏览器中link标签(加载css) img(加载图片) script（加载js) 标签不受同源策略，可以随便跨域，去加载其他域下面的资源。</p>
+<h2 id="jsonp"><a href="#jsonp" class="headerlink" title="jsonp"></a>jsonp</h2><p>由于script标签不受同源策略，可以用script去跨域，原理就是创建一个script标签，src地址去引入其他域下的js文件并且带入参数和回调函数，js文件返回一个执行函数，去执行window下的回调函数。</p>
+<p>例如现在要向www.xxx.com去请求数据，首先我们在window下声明一个函数a，然后创建一个script标签<code>&lt;script src=&quot;www.xxx.com?params=xxx&amp;cb=a&quot;&gt;&lt;/script&gt;</code>，params代表请求参数，cb指定成功后需要调用的回调函数，这个请求返回一个js文件内容<code>a({data: &#39;xxx&#39;})</code>，执行了最开始在window下声明的函数a并且传入我们需要的数据。</p>
+<p>下面来看看，如果封装一个简单的jsonp函数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">jsonp</span>(<span class="params">&#123; url, params &#125;</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">		<span class="comment">// 创建script标签</span></span><br><span class="line">		<span class="keyword">const</span> script = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">// window下声明回调函数</span></span><br><span class="line">		<span class="built_in">window</span>.cb = <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">			resolve(data);</span><br><span class="line">			<span class="built_in">document</span>.body.removeChild(script);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">const</span> arr = []</span><br><span class="line">		</span><br><span class="line">		<span class="comment">// 拼接参数</span></span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> params) &#123;</span><br><span class="line">			arr.push(<span class="string">`<span class="subst">$&#123;key&#125;</span>=<span class="subst">$&#123;params[key]&#125;</span>`</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		script.src = <span class="string">`<span class="subst">$&#123;url&#125;</span>?<span class="subst">$&#123;arr.join(<span class="string">'&amp;'</span>)&amp;cb=cb&#125;</span>`</span></span><br><span class="line">		</span><br><span class="line">		<span class="comment">// 加载文件</span></span><br><span class="line">		<span class="built_in">document</span>.body.appendChild(script);</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">jsonp(&#123;</span><br><span class="line">	url: <span class="string">'www.xxx.com/xxx'</span>,</span><br><span class="line">	params: &#123;<span class="attr">xx</span>: xx&#125;,</span><br><span class="line">&#125;).then(<span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="comment">// data数据</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>后端实现</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"></span><br><span class="line">app.get(<span class="string">'/xxx'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> &#123; xx, cb &#125; = req.query;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 返回cb(xxx)</span></span><br><span class="line">	res.end(<span class="string">`<span class="subst">$&#123;cb&#125;</span>(获取到数据<span class="subst">$&#123;xx&#125;</span>)`</span>);</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.listen(<span class="number">80</span>)</span><br></pre></td></tr></table></figure>
+<p>jsonp缺点: <strong>只支持get请求并且不安全，如果加载第三方返回script标签，会出现恶意攻击(xss)。</strong></p>
+<h2 id="cors"><a href="#cors" class="headerlink" title="cors"></a>cors</h2><p>解决jsonp缺点 支持get post put delet请求，由服务端控制，安全性高，前端正常发送ajax请求，项目中最常用的方式。</p>
+<p>上面说了同源策略是浏览器的行为，其实我们的请求能够到达服务器，只是浏览器给屏蔽掉了数据，cors就是利用http header头告诉浏览器一些信息，浏览器放开同源策略。</p>
+<p>简单请求</p>
+<p>-</p>
+<ol>
+<li>必须是以下三种方法<ul>
+<li>get</li>
+<li>post</li>
+<li>head(什么是head请求? -&gt; 只返回响应头，不会返回响应内容,http1.0定义的方法，前端用的很少)</li>
+</ul>
+</li>
+<li>请求头只能包含以下字段<ul>
+<li>Accept</li>
+<li>Accept-Language</li>
+<li>Content-Language</li>
+<li>Last-Event-ID</li>
+<li>Content-Type：application/x-www-form-urlencoded multipart/form-data text/plain</li>
+</ul>
+</li>
+</ol>
+<p>-</p>
+<p>如果不满足上面的简单请求，那么就是非简单请求，非简单请求的时候浏览器会首先发出一个预检请求OPTIONS到服务器，把将要发送的请求方法，请求头给服务器，如果服务器返回成功，那么浏览器才会发出正式的请求，否则报错。</p>
+<p>服务器可以设置的header头</p>
+<ul>
+<li><code>Access-Control-Allow-Origin: www.baidu.com</code>: 允许百度这个域下的请求，可以配置多个域，以逗号隔开，还能设置为*（*代表所有域都能请求但是<strong>origin写*不能允许携带cookie凭证</strong>）</li>
+<li><code>Access-Control-Allow-Methods: POST,GET,PUT,DELETE</code>: 允许哪些方法，以逗号隔开</li>
+<li><code>Access-Control-Allow-Headers: name,token</code>: 表示服务器支持name和token字段</li>
+<li><code>Access-Control-Allow-Credentials: true</code>: 允许cookie跨域</li>
+<li><code>Access-Control-Max-Age: 6</code>: 预检请求的有效期，单位为秒，相当于把预检请求缓存下来，下次直接发送正式请求，不用再去预检是否服务器支持该请求方法</li>
+<li><code>Access-Control-Expose-Headers: token</code>: 允许用js获取响应头里的token值</li>
+<li><code>Access-Control-Request-Headers: token</code>: 指定浏览发送请求时，需要带上的额外请求头</li>
+</ul>
+<p>用express简单实现一个cors跨域服务端</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"></span><br><span class="line">app.use(<span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">	</span><br><span class="line">	res.setHeader(<span class="string">'Access-Control-Allow-Origin'</span>, <span class="string">'http://localhost:8080'</span>);</span><br><span class="line">	res.setHeader(<span class="string">'Access-Control-Allow-Methods'</span>, <span class="string">'POST,GET,PUT,DELETE'</span>);</span><br><span class="line">	res.setHeader(<span class="string">'Access-Control-Allow-Headers'</span>, <span class="string">'name,token'</span>);</span><br><span class="line">	res.setHeader(<span class="string">'Access-Control-Allow-Credentials'</span>, <span class="literal">true</span>);</span><br><span class="line">	res.setHeader(<span class="string">'Access-Control-Max-Age'</span>, <span class="number">6</span>);</span><br><span class="line">	res.setHeader(<span class="string">'Access-Control-Expose-Headers'</span>, <span class="string">'token'</span>);</span><br><span class="line">	res.setHeader(<span class="string">'Access-Control-Request-Headers'</span>, <span class="string">'token'</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 如果为预检请求，直接返回同意，避免浪费之后处理资源</span></span><br><span class="line">	<span class="keyword">if</span> (req.method === <span class="string">'OPTIONS'</span>) &#123;</span><br><span class="line">		res.end();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	next();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.put(<span class="string">'/uset'</span>, (req, res) =&gt; &#123;</span><br><span class="line">	res.end(<span class="string">'yes'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="postMessage"><a href="#postMessage" class="headerlink" title="postMessage"></a>postMessage</h2><p>除了与服务器通信需要跨域，有时候会存在iframe加载跨域，window.open()一个标签页跨域通信，html5为了解决这个问题新增了postMessage方法。</p>
+<p><code>postMessage(需要传递的参数, 目标源)</code></p>
+<p>iframe:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">localhost:<span class="number">3000</span> 下 a.html</span><br><span class="line"></span><br><span class="line">&lt;iframe </span><br><span class="line">    src=<span class="string">"http://localhost:4000/b.html"</span></span><br><span class="line">    id=<span class="string">"frame"</span></span><br><span class="line">    onload=<span class="string">"load()"</span></span><br><span class="line">&gt;&lt;/iframe&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">load</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> i = <span class="built_in">document</span>.getElementById(<span class="string">'frame'</span>)</span><br><span class="line">        i.contentWindow.postMessage(<span class="string">'send'</span>, <span class="string">'http://localhost:4000/'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">window</span>.addEventListener(<span class="string">'message'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(e.data) <span class="comment">// 接收到ok</span></span><br><span class="line">    &#125;)</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">localhost:5000 下 b.html</span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp"> window.addEventListener('message', function(e) &#123;</span></span><br><span class="line"><span class="regexp">     console.log(e.data) 接收到send</span></span><br><span class="line"><span class="regexp">     </span></span><br><span class="line"><span class="regexp">     e.source.postMessage('ok', e.origin)</span></span><br><span class="line"><span class="regexp"> &#125;, false)</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>注意: 一定要在onload结束之后再发送postMessage，否则子页面接收不到消息</strong></p>
+<p>window.open()</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">localhost:<span class="number">3000</span> 下 a.html</span><br><span class="line">&lt;input type=<span class="string">"button"</span> value=<span class="string">"打开窗口"</span> onclick=<span class="string">"open_new()"</span>&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">open_new</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> newWindow = <span class="built_in">window</span>.open(<span class="string">'http://localhost:4000/b.html'</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 跨域无法监听onload 如果同域下跨域使用</span></span><br><span class="line">        newWindow.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            newWindow.postMessage(<span class="string">'open'</span>, <span class="string">'http://localhost:4000/'</span>)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">            newWindow.postMessage(<span class="string">'open'</span>, <span class="string">'http://localhost:4000/'</span>)</span><br><span class="line">        &#125;, <span class="number">1000</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">window</span>.addEventListener(<span class="string">'message'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(e.data)</span><br><span class="line">    &#125;)</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">localhost:5000 下 b.html</span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">window.addEventListener('message', function(e)&#123;</span></span><br><span class="line"><span class="regexp">    console.log(e)</span></span><br><span class="line"><span class="regexp">&#125;, false);</span></span><br><span class="line"><span class="regexp">        </span></span><br><span class="line"><span class="regexp">window.opener.postMessage('Nice to see you', 'http:/</span><span class="regexp">/localhost:3000/</span><span class="string">');</span></span><br><span class="line"><span class="string">&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>window.open()如果是跨域，则无法监听onload事件</strong></p>
+<h2 id="document-domain"><a href="#document-domain" class="headerlink" title="document.domain"></a>document.domain</h2><p>该方法存在一定的限制条件，必须是2个网页的一级域名相同，用法也很简单，可以使2个页面共享cookie。</p>
+<p>例如: <code>a.xxx.com</code>和<code>b.xxx.com</code>:</p>
+<p>同时设置<code>docment.domain = &#39;xxx.com&#39;</code></p>
+<p>服务器设置cookie时也设置到<code>xxx.com</code></p>
+<p>这样的话，在这个一级域名下的所有二三级域名，都可以互通cookie</p>
+<h2 id="window-name"><a href="#window-name" class="headerlink" title="window.name"></a>window.name</h2><p>利用window.name改变网页地址，该值不变的特点，可以做到跨域。</p>
+<p>a网站iframe加载b网站，b网站把需要传输的数据放入window.name中，然后重定向到a网站下同域的网址，这时a网站可以顺利的拿到window.name属性。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">localhost: <span class="number">3000</span> 下的a.html</span><br><span class="line"></span><br><span class="line">&lt;iframe id=<span class="string">"fra"</span> src=<span class="string">"http://localhost:4000/b.html"</span> onload=<span class="string">"load()"</span>&gt;&lt;/iframe&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">load</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">const</span> f = <span class="built_in">document</span>.getElementById(<span class="string">'fra'</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">console</span>.log(f.contentWindow.name);</span><br><span class="line">    &#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">localhost: 4000 下的b.html</span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">    window.name = 'hello'</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    window.location = 'http:/</span><span class="regexp">/localhost:3000/</span>c.html<span class="string">'</span></span><br><span class="line"><span class="string">&lt;/script&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">localhost: 3000 下的c.html</span></span><br><span class="line"><span class="string">无需任何代码,建一个空的html文件</span></span><br></pre></td></tr></table></figure>
+<h2 id="location-hash"><a href="#location-hash" class="headerlink" title="location.hash"></a>location.hash</h2><p>hash值得变化不会导致页面刷新，通过a页面改变b页面hash值，b页面不能直接通过parent去修改a页面的hash值，需要通过加载一个a域下的代理iframe修改，从而实现跨域通信。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">localhost: <span class="number">3000</span> 下的a.html</span><br><span class="line"></span><br><span class="line">&lt;iframe id=<span class="string">"fra"</span> src=<span class="string">"http://localhost:4000/b.html"</span> onload=<span class="string">"load()"</span>&gt;&lt;/iframe&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">load</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">const</span> f = <span class="built_in">document</span>.getElementById(<span class="string">'fra'</span>);</span><br><span class="line">        f.src = <span class="string">'http://localhost:4000/b.html#hello'</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">window</span>.addEventListener(<span class="string">'hashchange'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="built_in">window</span>.location.hash)</span><br><span class="line">    &#125;)</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">localhost: 4000 下的b.html</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">    addEventListener('hashchange', function() &#123;</span></span><br><span class="line"><span class="regexp">        console.log(window.location.hash)</span></span><br><span class="line"><span class="regexp">        </span></span><br><span class="line"><span class="regexp">        const ifr = document.createElement('iframe');</span></span><br><span class="line"><span class="regexp">        ifr.style.display = 'none';</span></span><br><span class="line">        ifr.src = 'http://localhost:3000/c.html#yes';</span><br><span class="line">        <span class="built_in">document</span>.body.appendChild(ifr);</span><br><span class="line">    &#125;)</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">localhost: 3000 下的c.html</span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">    parent.parent.location.hash = window.location.hash.substring(1);</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="other"><a href="#other" class="headerlink" title="other"></a>other</h2><p>以上就是项目中最常用到的跨域方式，还有一种与服务器通信方式websocket不受浏览器同源策略。平常在开发中经常用到的webpack-dev-server,nginx,http-server…利用的是代理去请求。</p>
+<p>先是本地起了一个代理服务器，前端发送http到代理服务器，由代理服务器请求后端的接口，跨域是浏览器的行为，2个服务器之间是没有同源策略的，所有代理服务器拿到数据后，再返回给前端。代理服务器和前端同源。</p>
+<p><img src="https://wx4.sinaimg.cn/mw690/7474ff19gy1ftmcjchhjwj214g0lwjts.jpg" alt=""></p>
 
-        <div class="article-info info-on-right">
-          
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/img/alipay.JPG">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/img/wechat.JPG">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -184,361 +305,122 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/07/25/cross/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/21/redux/" class="archive-article-date">
-  	<time datetime="2018-04-21T10:29:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-21</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2018/04/21/redux/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">前面有一个Redux，我们去撩(聊)一下它。</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/21/redux/">前面有一个Redux，我们去撩(聊)一下它。</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/26/webpack/" class="archive-article-date">
-  	<time datetime="2018-03-26T05:57:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/26/webpack/">带你走进webpack世界，成为webpack头号玩家。</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">webpack</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/17/express/" class="archive-article-date">
-  	<time datetime="2018-03-17T06:50:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-17</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/17/express/">express初识源码-Router,Layer,Route</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/03/hopeServer/" class="archive-article-date">
-  	<time datetime="2018-03-03T07:11:18.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-03</time>
-</a>
-        </div>
-    	 
+  <div id="gitment-ctn"></div> 
+<link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+<script src="//imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  id: "http://yoursite.com/2018/07/25/cross/",
+  owner: 'lihuanji',
+  repo: 'http://lihuanji.github.io',
+  oauth: {
+    client_id: '8f8560bf27d97dbcf161',
+    client_secret: '897ee37dc9b7b609ace05674fe0c1c1cbaf0fa9e',
+  },
+})
+gitment.render('gitment-ctn')
+</script>
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/03/hopeServer/">实战node静态文件服务器</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/10/tcp/" class="archive-article-date">
-  	<time datetime="2018-02-10T02:22:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-10</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/10/tcp/">TCP/IP网络模型</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">network</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/03/stream/" class="archive-article-date">
-  	<time datetime="2018-02-03T08:20:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/03/stream/">node中的精髓Stream(流)</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/31/insertAfter/" class="archive-article-date">
-  	<time datetime="2018-01-31T06:45:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-31</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/31/insertAfter/">insertAfter实现</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/20/eventLoop/" class="archive-article-date">
-  	<time datetime="2018-01-20T06:09:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-20</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/20/eventLoop/">javascript中的Event Loop详解</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/12/promise/" class="archive-article-date">
-  	<time datetime="2018-01-12T04:32:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-12</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/12/promise/">Promise是个什么鬼？实现一个Promise.</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -561,8 +443,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
